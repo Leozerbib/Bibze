@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Entity
 @Table (name = "users")
@@ -27,7 +28,7 @@ public class user {
     private int age;
 
     @Column(name = "date_crea",nullable = false)
-    private Timestamp date_crea;
+    private LocalDate date_crea;
 
     @Column(name = "last_co",nullable = false)
     private Timestamp last_co;

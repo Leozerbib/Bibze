@@ -28,8 +28,8 @@ public class UserServiceImpl implements iuserService {
     }
 
     @Override
-    public List<user> findUserByUsername(String username) {
-        return (List<user>) userDao.findByUsername(username);
+    public user findUserByUsername(String username) {
+        return userDao.findByUsername(username);
     }
 
     @Override

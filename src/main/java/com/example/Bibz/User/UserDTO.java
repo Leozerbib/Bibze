@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Getter@Setter
 public class UserDTO implements Comparable<UserDTO>{
@@ -14,7 +15,7 @@ public class UserDTO implements Comparable<UserDTO>{
     private String username;
     private int age;
     private Timestamp last_co;
-    private Timestamp date_crea;
+    private LocalDate date_crea;
 
     @Override
     public int compareTo(UserDTO o) {
