@@ -1,19 +1,22 @@
-package com.example.Bibz.User;
+package com.example.Bibz.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table (name = "users")
-@Setter@Getter
 public class user {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "user_id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "names",nullable = false)
     private String names;
@@ -27,11 +30,15 @@ public class user {
     @Column(name = "age")
     private int age;
 
-    @Column(name = "date_crea",nullable = false)
+    @Column(name = "date_crea")
     private LocalDate date_crea;
 
-    @Column(name = "last_co",nullable = false)
-    private Timestamp last_co;
+    @Column(name = "last_co")
+    private LocalDate last_co;
 
+    @Column(name = "email",unique = true,nullable = false)
+    private String email;
 
+    @Column(name = "passwords",nullable = false)
+    private String password;
 }
