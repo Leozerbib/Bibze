@@ -7,7 +7,6 @@ import com.example.Bibz.model.user;
 import com.example.Bibz.service.implementation.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -15,9 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @RestController
 @CrossOrigin
@@ -116,39 +113,46 @@ public class User_controler {
 
     /**
      * Met à jour les données d'un client dans la base de donnée H2. Si le client n'est pas retrouvé, on retourne un code indiquant que la mise à jour n'a pas abouti.
+     *
      * @param LoginDTO
      * @return
      */
     @PostMapping("/login")
-    public LoginResponse loginUser(@RequestBody LoginDTO LoginDTO){
+    public ResponseEntity<user> loginUser(@RequestBody LoginDTO LoginDTO){
         String msg = "";
         if (searchUserByUsernameOrEmail(LoginDTO).getBody() != null){
             String passwordTest = LoginDTO.getPasswords();
             String encodedPassword = searchUserByUsernameOrEmail(LoginDTO).getBody().getPassword();
             Boolean isPwdOk = passwordTest.equals(encodedPassword);
             if (isPwdOk){
-                Optional<user> user= Optional.ofNullable(userService.findByIdAndPassword(searchUserByUsernameOrEmail(LoginDTO).getBody().getId(), passwordTest));
-                if (user.isPresent()){
-
+                if (userService.findByIdAndPassword(searchUserByUsernameOrEmail(LoginDTO).getBody().getId(), passwordTest)!=null){
                     System.out.println("Login Success");
-                    return new LoginResponse("Login Success",true,200);
+                    ResponseEntity<user> userResponseEntity=new ResponseEntity<user>(userService.findByIdAndPassword(searchUserByUsernameOrEmail(LoginDTO).getBody().getId(), passwordTest),HttpStatusCode.valueOf(200));
+                    System.out.println(userResponseEntity);
+                    return new ResponseEntity<user>(userService.findByIdAndPassword(searchUserByUsernameOrEmail(LoginDTO).getBody().getId(), passwordTest),HttpStatusCode.valueOf(200));
                 }
                 else {
 
                     System.out.println("Login Failed");
-                    return new LoginResponse("Login Failed",false,400);
+                    ResponseEntity<user> userResponseEntity=new ResponseEntity<user>(HttpStatusCode.valueOf(406));
+                    System.out.println(userResponseEntity);
+                    return new ResponseEntity<user>(HttpStatus.NOT_MODIFIED);
                 }
             }
             else{
 
                 System.out.println("Password not valid");
-                return new LoginResponse("Password not valid",false,404);
+                ResponseEntity<user> userResponseEntity=new ResponseEntity<user>(HttpStatusCode.valueOf(406));
+                System.out.println(userResponseEntity);
+                return new ResponseEntity<user>(HttpStatus.NOT_ACCEPTABLE);
             }
         }
         else{
 
             System.out.println("Username or Email not valid");
-            return new LoginResponse("Username or Email not valid",false,404);
+            ResponseEntity<user> userResponseEntity=new ResponseEntity<user>(HttpStatusCode.valueOf(406));
+            System.out.println(userResponseEntity);
+            return new ResponseEntity<user>(HttpStatus.NOT_FOUND);
         }
 
 
