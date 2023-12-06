@@ -16,4 +16,5 @@ public interface TeamService {
     public Team findByNameAndPassword(String name, String password);
     public Team findByName(String name);
     public boolean checkIfIdexists(Long id);
+    public Long findIdByName(String name);
 }

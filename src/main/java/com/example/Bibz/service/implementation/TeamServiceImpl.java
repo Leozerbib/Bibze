@@ -71,6 +71,11 @@ public class TeamServiceImpl implements TeamService {
         return false;
     }
 
+    @Override
+    public Long findIdByName(String name) {
+        return teamRepo.findIdByName(name);
+    }
+
     private TeamDto mapTeamToTeamDTO(Team team){
         ModelMapper mapper = new ModelMapper();
         TeamDto TeamDTO = mapper.map(team,TeamDto.class);

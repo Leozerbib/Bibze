@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/Bibz")
+@RequestMapping("/Bibz/User")
 @RequiredArgsConstructor
 public class User_controler {
 

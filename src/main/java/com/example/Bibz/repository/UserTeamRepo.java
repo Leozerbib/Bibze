@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -16,7 +18,8 @@ public interface UserTeamRepo extends JpaRepository<UserTeam,Long> {
     public UserTeam findByUser_id(Set<user> user_id);
     public UserTeam findByUser_idAndTeam_id(Set<Team> team_id,Set<user> user_id);
     public UserTeam findByTeam_id(Long id);
-    public UserTeam findByUser_id(Long id);
+    @Query("select ut.team_id ,u.id ,u.username from UserTeam ut left join ut.user_id u where ut.team_id = :teamID")
+    public List<user> findByUser_id(Long teamID);
 
 
 }

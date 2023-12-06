@@ -4,7 +4,9 @@ import com.example.Bibz.DTO.UserTeamDTO;
 import com.example.Bibz.model.Team;
 import com.example.Bibz.model.UserTeam;
 import com.example.Bibz.model.user;
+import com.example.Bibz.repository.TeamRepo;
 import com.example.Bibz.repository.UserTeamRepo;
+import com.example.Bibz.service.TeamService;
 import com.example.Bibz.service.UserTeamService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 @Service("userTeamService")
 @Transactional
@@ -25,6 +28,8 @@ import java.util.Collection;
 public class UserteamServiceImpl implements UserTeamService {
     @Autowired
     private final UserTeamRepo userTeamRepo;
+    @Autowired
+    private final TeamRepo teamRepo;
     @Override
     public ResponseEntity<UserTeamDTO> saveUserTeam(UserTeamDTO UserTeamDTO) {
         if (userTeamRepo.existsById(UserTeamDTO.getId())){
@@ -50,8 +55,9 @@ public class UserteamServiceImpl implements UserTeamService {
     }
 
     @Override
-    public Collection<user> findUserByTeam(Long id) {
-        return (Collection<user>) ;
+    public List<user> findUserByTeam(Long id) {
+        List<user> userofTeam = userTeamRepo.findByUser_id(id);
+        return (List<user>) userofTeam;
     }
 
     @Override
