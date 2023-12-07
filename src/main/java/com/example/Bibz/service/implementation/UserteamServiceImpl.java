@@ -1,5 +1,6 @@
 package com.example.Bibz.service.implementation;
 
+import com.example.Bibz.DTO.UserReturnDto;
 import com.example.Bibz.DTO.UserTeamDTO;
 import com.example.Bibz.model.Team;
 import com.example.Bibz.model.UserTeam;
@@ -55,9 +56,14 @@ public class UserteamServiceImpl implements UserTeamService {
     }
 
     @Override
-    public List<user> findUserByTeam(Long id) {
-        List<user> userofTeam = userTeamRepo.findByUser_id(id);
-        return (List<user>) userofTeam;
+    public List<UserReturnDto> findUserByTeam(Long id) {
+        List<UserReturnDto> userofTeam = userTeamRepo.findByUser_id(id);
+        return userofTeam;
+    }
+
+    @Override
+    public boolean checkIfExist(Long id){
+        return userTeamRepo.existsById(id);
     }
 
     @Override
@@ -75,5 +81,16 @@ public class UserteamServiceImpl implements UserTeamService {
         ModelMapper mapper = new ModelMapper();
         UserTeam userTeam = new UserTeam(userTeamDTO.getId(),userTeamDTO.getUser_id(),userTeamDTO.getTeam_id(),userTeamDTO.getDateCrea());
         return userTeam;
+    }
+    private UserReturnDto mapUserToUserReturnDTO(user user){
+        ModelMapper mapper = new ModelMapper();
+        UserReturnDto userReturnDTO = mapper.map(user,UserReturnDto.class);
+        return userReturnDTO;
+    }
+
+    private user mapUserReturnDTOToUser(UserReturnDto userReturnDTO){
+        ModelMapper mapper = new ModelMapper();
+        user user = new UserTeam(userTeamDTO.getId(),userTeamDTO.getUser_id(),userTeamDTO.getTeam_id(),userTeamDTO.getDateCrea());
+        return user;
     }
 }

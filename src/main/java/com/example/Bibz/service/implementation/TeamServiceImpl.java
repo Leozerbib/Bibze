@@ -62,12 +62,16 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public Team findByName(String name) {
-        return teamRepo.findTeamByName(name);
+    public TeamDto findByName(String name) {
+        TeamDto teamDto = mapTeamToTeamDTO(teamRepo.findTeamByName(name));
+        return teamDto;
     }
 
     @Override
     public boolean checkIfIdexists(Long id) {
+        if(teamRepo.findTeamById(id) != null){
+            return true;
+        }
         return false;
     }
 

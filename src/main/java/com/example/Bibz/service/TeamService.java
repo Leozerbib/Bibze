@@ -14,7 +14,7 @@ public interface TeamService {
     public void deleteTeam(Long id);
     public Team findByIdAndPassword(Long id, String password);
     public Team findByNameAndPassword(String name, String password);
-    public Team findByName(String name);
+    public TeamDto findByName(String name);
     public boolean checkIfIdexists(Long id);
     public Long findIdByName(String name);
 }
