@@ -1,5 +1,7 @@
 package com.example.Bibz.service;
 
+import com.example.Bibz.DTO.LoginTeamDto;
+import com.example.Bibz.DTO.RestrictedTeamDto;
 import com.example.Bibz.DTO.TeamDto;
 import com.example.Bibz.model.Team;
 import com.example.Bibz.model.user;
@@ -9,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface TeamService {
-    public ResponseEntity<TeamDto> saveTeam(TeamDto Team);
+    public ResponseEntity<RestrictedTeamDto> saveTeam(LoginTeamDto Team);
     public Team updateTeam(Team team);
     public void deleteTeam(Long id);
     public Team findByIdAndPassword(Long id, String password);

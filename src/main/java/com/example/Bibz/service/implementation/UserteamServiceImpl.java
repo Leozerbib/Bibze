@@ -88,9 +88,5 @@ public class UserteamServiceImpl implements UserTeamService {
         return userReturnDTO;
     }
 
-    private user mapUserReturnDTOToUser(UserReturnDto userReturnDTO){
-        ModelMapper mapper = new ModelMapper();
-        user user = new UserTeam(userTeamDTO.getId(),userTeamDTO.getUser_id(),userTeamDTO.getTeam_id(),userTeamDTO.getDateCrea());
-        return user;
-    }
+
 }

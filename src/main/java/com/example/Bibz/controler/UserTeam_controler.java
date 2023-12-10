@@ -2,6 +2,7 @@ package com.example.Bibz.controler;
 
 import com.example.Bibz.DTO.TeamDto;
 import com.example.Bibz.DTO.UserDTO;
+import com.example.Bibz.DTO.UserReturnDto;
 import com.example.Bibz.DTO.UserTeamDTO;
 import com.example.Bibz.service.implementation.TeamServiceImpl;
 import com.example.Bibz.service.implementation.UserteamServiceImpl;
@@ -47,8 +48,9 @@ public class UserTeam_controler {
     }
 
     @GetMapping(path = "/get/findUserbyTeam")
-    public ResponseEntity<List<UserDTO>> findUserByTeam(TeamDto teamDto){
-        return new ResponseEntity<UserDTO>(userteamService.findUserByTeam(teamDto.getId()),HttpStatus.FOUND);
+    public ResponseEntity<List<UserReturnDto>> findUserByTeam(TeamDto teamDto){
+        List<UserReturnDto> userDTOList = userteamService.findUserByTeam(teamDto.getId());
+        return new ResponseEntity<List<UserReturnDto>>(userDTOList,HttpStatus.FOUND);
     }
 
 }

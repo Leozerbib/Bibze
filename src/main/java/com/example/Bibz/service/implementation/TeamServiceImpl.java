@@ -1,5 +1,7 @@
 package com.example.Bibz.service.implementation;
 
+import com.example.Bibz.DTO.LoginTeamDto;
+import com.example.Bibz.DTO.RestrictedTeamDto;
 import com.example.Bibz.DTO.TeamDto;
 import com.example.Bibz.model.Team;
 import com.example.Bibz.model.user;
@@ -26,19 +28,18 @@ public class TeamServiceImpl implements TeamService {
     private final TeamRepo teamRepo;
 
     @Override
-    public ResponseEntity<TeamDto> saveTeam(TeamDto Team) {
+    public ResponseEntity<RestrictedTeamDto> saveTeam(LoginTeamDto Team) {
         if (findByName(Team.getName()) !=null ){
-            return new ResponseEntity<TeamDto>(HttpStatus.CONFLICT);
+            return new ResponseEntity<RestrictedTeamDto>(HttpStatus.CONFLICT);
         }
-        Team teamRequest = mapTeamDTOToTeam(Team);
+        Team teamRequest = mapLoginTeamDtoToTeam(Team);
         teamRequest.setDate_crea(LocalDate.now());
         System.out.println(teamRequest.getName());
-        Team teamResponse = teamRepo.save(teamRequest);
-        if (teamRequest != null){
-            TeamDto teamDTO = mapTeamToTeamDTO(teamResponse);
-            return new ResponseEntity<TeamDto>(teamDTO,HttpStatus.CREATED);
+        if (teamRepo.save(teamRequest) != null){
+            RestrictedTeamDto restrictedTeamDto = mapTeamToRestctedTeamDto(teamRequest);
+            return new ResponseEntity<RestrictedTeamDto>(restrictedTeamDto,HttpStatus.CREATED);
         }
-        return new ResponseEntity<TeamDto>(HttpStatus.NOT_MODIFIED);
+        return new ResponseEntity<RestrictedTeamDto>(HttpStatus.NOT_MODIFIED);
     }
 
     @Override
@@ -89,6 +90,28 @@ public class TeamServiceImpl implements TeamService {
     private Team mapTeamDTOToTeam(TeamDto teamDTO){
         ModelMapper mapper = new ModelMapper();
         Team team = new Team(1L,teamDTO.getName(), teamDTO.getNbr_user(), teamDTO.getDate_crea(),teamDTO.getPwd());
+        return team;
+    }
+    private Team mapRestrictedTeamDtoToTeam(RestrictedTeamDto restrictedTeamDto){
+        ModelMapper mapper = new ModelMapper();
+        Team team = new Team(1L,restrictedTeamDto.getName(), 0, null,null);
+        return team;
+    }
+
+    private RestrictedTeamDto mapTeamToRestctedTeamDto(Team team){
+        ModelMapper mapper = new ModelMapper();
+        RestrictedTeamDto restrictedTeamDto = mapper.map(team,RestrictedTeamDto.class);
+        return restrictedTeamDto;
+    }
+    private LoginTeamDto mapTeamToLoginTeamDto(Team team){
+        ModelMapper mapper = new ModelMapper();
+        LoginTeamDto loginTeamDto = mapper.map(team,LoginTeamDto.class);
+        return loginTeamDto;
+    }
+
+    private Team mapLoginTeamDtoToTeam(LoginTeamDto loginTeamDto){
+        ModelMapper mapper = new ModelMapper();
+        Team team = new Team(1L, loginTeamDto.getName(),0, null, loginTeamDto.getPwd());
         return team;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.Bibz.repository;
 
+import com.example.Bibz.DTO.UserReturnDto;
 import com.example.Bibz.model.Team;
 import com.example.Bibz.model.UserTeam;
 import com.example.Bibz.model.user;
@@ -18,8 +19,8 @@ public interface UserTeamRepo extends JpaRepository<UserTeam,Long> {
     public UserTeam findByUser_id(Set<user> user_id);
     public UserTeam findByUser_idAndTeam_id(Set<Team> team_id,Set<user> user_id);
     public UserTeam findByTeam_id(Long id);
-    @Query("select ut.team_id ,u.id ,u.username from UserTeam ut left join ut.user_id u where ut.team_id = :teamID")
-    public List<user> findByUser_id(Long teamID);
+    @Query("select  u.id ,u.names,u.username from UserTeam ut left join ut.user_id u where ut.team_id = :teamID")
+    public List<UserReturnDto> findByUser_id(Long teamID);
 
 
 }

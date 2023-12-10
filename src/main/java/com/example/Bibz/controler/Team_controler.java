@@ -1,5 +1,7 @@
 package com.example.Bibz.controler;
 
+import com.example.Bibz.DTO.LoginTeamDto;
+import com.example.Bibz.DTO.RestrictedTeamDto;
 import com.example.Bibz.DTO.TeamDto;
 import com.example.Bibz.DTO.UserDTO;
 import com.example.Bibz.model.Team;
@@ -24,10 +26,10 @@ public class Team_controler {
     private TeamServiceImpl teamService;
 
     @PostMapping(path = "/create")
-    public Long CreateTeam(@RequestBody TeamDto teamDto){
+    public Long CreateTeam(@RequestBody LoginTeamDto teamDto){
         System.out.println(teamDto);
-        teamService.saveTeam(teamDto);
-        return Long.valueOf(teamDto.getId());
+        RestrictedTeamDto restrictedTeamDto = teamService.saveTeam(teamDto).getBody();
+        return Long.valueOf(restrictedTeamDto.getId());
     }
 
     @PutMapping(path = "/update")
