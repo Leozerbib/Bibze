@@ -7,7 +7,6 @@ import com.example.Bibz.model.UserTeam;
 import com.example.Bibz.model.user;
 import com.example.Bibz.repository.TeamRepo;
 import com.example.Bibz.repository.UserTeamRepo;
-import com.example.Bibz.service.TeamService;
 import com.example.Bibz.service.UserTeamService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 @Service("userTeamService")
 @Transactional
@@ -32,17 +30,13 @@ public class UserteamServiceImpl implements UserTeamService {
     @Autowired
     private final TeamRepo teamRepo;
     @Override
-    public ResponseEntity<UserTeamDTO> saveUserTeam(UserTeamDTO UserTeamDTO) {
-        if (userTeamRepo.existsById(UserTeamDTO.getId())){
-            return new ResponseEntity<UserTeamDTO>(HttpStatus.CONFLICT);
+    public ResponseEntity<UserTeam> saveUserTeam(UserTeamDTO UserTeam) {
+        if (userTeamRepo.existsById(UserTeam.getId())){
+            return new ResponseEntity<UserTeam>(HttpStatus.CONFLICT);
         }
-        UserTeam UserTeamRequest = mapUserTeamDTOToUserTeam(UserTeamDTO);
-        UserTeamRequest.setDateCrea(LocalDate.now());
-        if (userTeamRepo.save(UserTeamRequest) != null){
-            UserTeamDTO userTeamDTO = mapUserTeamToUserTeamDTO(UserTeamRequest);
-            return new ResponseEntity<UserTeamDTO>(HttpStatus.CREATED);
-        }
-        return new ResponseEntity<UserTeamDTO>(HttpStatus.NOT_MODIFIED);
+        userTeamRepo.save(mapUserTeamDTOToUserTeam(UserTeam));
+        return new ResponseEntity<UserTeam>(HttpStatus.CREATED);
+
     }
 
     @Override
@@ -56,8 +50,8 @@ public class UserteamServiceImpl implements UserTeamService {
     }
 
     @Override
-    public List<UserReturnDto> findUserByTeam(Long id) {
-        List<UserReturnDto> userofTeam = userTeamRepo.findByUser_id(id);
+    public Set<user> findUserByTeam(Long id) {
+        Set<user> userofTeam = userTeamRepo.findByTeam_id(id);
         return userofTeam;
     }
 
@@ -79,7 +73,7 @@ public class UserteamServiceImpl implements UserTeamService {
 
     private UserTeam mapUserTeamDTOToUserTeam(UserTeamDTO userTeamDTO){
         ModelMapper mapper = new ModelMapper();
-        UserTeam userTeam = new UserTeam(userTeamDTO.getId(),userTeamDTO.getUser_id(),userTeamDTO.getTeam_id(),userTeamDTO.getDateCrea());
+        UserTeam userTeam = new UserTeam(0L,userTeamDTO.getUser_id(),userTeamDTO.getTeam_id(),userTeamDTO.getDateCrea());
         return userTeam;
     }
     private UserReturnDto mapUserToUserReturnDTO(user user){

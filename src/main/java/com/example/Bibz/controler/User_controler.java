@@ -1,6 +1,7 @@
 package com.example.Bibz.controler;
 
 import com.example.Bibz.DTO.LoginDTO;
+import com.example.Bibz.DTO.RestrictedUserDro;
 import com.example.Bibz.DTO.UserDTO;
 import com.example.Bibz.Response.LoginResponse;
 import com.example.Bibz.model.user;
@@ -40,7 +41,7 @@ public class User_controler {
         System.out.println(userDTORequest.getUsername());
 //, UriComponentsBuilder uriComponentBuilder
         userService.saveUser(userDTORequest);
-        Long id = Long.valueOf(userDTORequest.getUser_id());
+        Long id = Long.valueOf(userDTORequest.getId());
         return id;
 
     }
@@ -53,7 +54,7 @@ public class User_controler {
      */
     @PutMapping("/updateUser")
     public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTORequest){
-        if (!userService.checkIfIdexists((long) userDTORequest.getUser_id())){
+        if (!userService.checkIfIdexists((long) userDTORequest.getId())){
             return new ResponseEntity<>(HttpStatusCode.valueOf(404));
         }
         user userRequest = mapUserDTOToUser(userDTORequest);
@@ -102,13 +103,13 @@ public class User_controler {
      * @return
      */
     @GetMapping("/searchByUsernameOrEmail")
-    public ResponseEntity<user> searchUserByUsernameOrEmail(@RequestBody LoginDTO userDTO) {
+    public ResponseEntity<UserDTO> searchUserByUsernameOrEmail(@RequestBody LoginDTO userDTO) {
         //, UriComponentsBuilder uriComponentBuilder
-        user user = userService.findByUsernameOrEmail(userDTO.getUsername(), userDTO.getUsername());
+        UserDTO user = mapUserToUserDTO(userService.findByUsernameOrEmail(userDTO.getUsername(), userDTO.getUsername()));
         if (user != null) {
-            return new ResponseEntity<user>(user, HttpStatusCode.valueOf(200));
+            return new ResponseEntity<UserDTO>(user, HttpStatusCode.valueOf(200));
         }
-        return new ResponseEntity<user>(HttpStatusCode.valueOf(304));
+        return new ResponseEntity<UserDTO>(HttpStatusCode.valueOf(304));
     }
 
     /**
@@ -118,25 +119,24 @@ public class User_controler {
      * @return
      */
     @PostMapping("/login")
-    public ResponseEntity<user> loginUser(@RequestBody LoginDTO LoginDTO){
+    public ResponseEntity<RestrictedUserDro> loginUser(@RequestBody LoginDTO LoginDTO){
         String msg = "";
         if (searchUserByUsernameOrEmail(LoginDTO).getBody() != null){
             String passwordTest = LoginDTO.getPasswords();
-            String encodedPassword = searchUserByUsernameOrEmail(LoginDTO).getBody().getPassword();
-            Boolean isPwdOk = passwordTest.equals(encodedPassword);
-            if (isPwdOk){
+            String encodedPassword = searchUserByUsernameOrEmail(LoginDTO).getBody().getPasswords();
+            if (passwordTest.equals(encodedPassword)){
                 if (userService.findByIdAndPassword(searchUserByUsernameOrEmail(LoginDTO).getBody().getId(), passwordTest)!=null){
                     System.out.println("Login Success");
-                    ResponseEntity<user> userResponseEntity=new ResponseEntity<user>(userService.findByIdAndPassword(searchUserByUsernameOrEmail(LoginDTO).getBody().getId(), passwordTest),HttpStatusCode.valueOf(200));
+                    ResponseEntity<RestrictedUserDro> userResponseEntity=new ResponseEntity<RestrictedUserDro>(userService.findByIdAndPassword(searchUserByUsernameOrEmail(LoginDTO).getBody().getId(), passwordTest),HttpStatusCode.valueOf(200));
                     System.out.println(userResponseEntity);
-                    return new ResponseEntity<user>(userService.findByIdAndPassword(searchUserByUsernameOrEmail(LoginDTO).getBody().getId(), passwordTest),HttpStatusCode.valueOf(200));
+                    return new ResponseEntity<RestrictedUserDro>(userService.findByIdAndPassword(searchUserByUsernameOrEmail(LoginDTO).getBody().getId(), passwordTest),HttpStatusCode.valueOf(200));
                 }
                 else {
 
                     System.out.println("Login Failed");
                     ResponseEntity<user> userResponseEntity=new ResponseEntity<user>(HttpStatusCode.valueOf(406));
                     System.out.println(userResponseEntity);
-                    return new ResponseEntity<user>(HttpStatus.NOT_MODIFIED);
+                    return new ResponseEntity<RestrictedUserDro>(HttpStatus.NOT_MODIFIED);
                 }
             }
             else{
@@ -144,7 +144,7 @@ public class User_controler {
                 System.out.println("Password not valid");
                 ResponseEntity<user> userResponseEntity=new ResponseEntity<user>(HttpStatusCode.valueOf(406));
                 System.out.println(userResponseEntity);
-                return new ResponseEntity<user>(HttpStatus.NOT_ACCEPTABLE);
+                return new ResponseEntity<RestrictedUserDro>(HttpStatus.NOT_ACCEPTABLE);
             }
         }
         else{
@@ -152,7 +152,7 @@ public class User_controler {
             System.out.println("Username or Email not valid");
             ResponseEntity<user> userResponseEntity=new ResponseEntity<user>(HttpStatusCode.valueOf(406));
             System.out.println(userResponseEntity);
-            return new ResponseEntity<user>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<RestrictedUserDro>(HttpStatus.NOT_FOUND);
         }
 
 

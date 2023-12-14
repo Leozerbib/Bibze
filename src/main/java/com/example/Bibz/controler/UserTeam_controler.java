@@ -4,6 +4,8 @@ import com.example.Bibz.DTO.TeamDto;
 import com.example.Bibz.DTO.UserDTO;
 import com.example.Bibz.DTO.UserReturnDto;
 import com.example.Bibz.DTO.UserTeamDTO;
+import com.example.Bibz.model.UserTeam;
+import com.example.Bibz.model.user;
 import com.example.Bibz.service.implementation.TeamServiceImpl;
 import com.example.Bibz.service.implementation.UserteamServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @CrossOrigin
 @RequestMapping("/Bibze/UserTeam")
@@ -27,17 +30,15 @@ public class UserTeam_controler {
     private TeamServiceImpl teamService;
 
     @PostMapping(path = "/create_UserTeam")
-    public Long create(UserTeamDTO userTeamDTO){
-        System.out.println(userTeamDTO);
-        userteamService.saveUserTeam(userTeamDTO);
-        return userTeamDTO.getId();
+    public Long create(UserTeamDTO userTeam){
+        System.out.println(userTeam);
+        userteamService.saveUserTeam(userTeam);
+        return userTeam.getId();
     }
 
     @PutMapping(path = "/update_UserTeam")
     public ResponseEntity<UserTeamDTO> UpdateUserTeam(UserTeamDTO userTeamDTO){
-        if (userteamService.checkIfExist(userTeamDTO.getId())){
-            return new ResponseEntity<UserTeamDTO>(userTeamDTO, HttpStatus.FOUND);
-        }
+
         return new ResponseEntity<UserTeamDTO>(HttpStatus.NOT_MODIFIED);
     }
 
@@ -48,9 +49,9 @@ public class UserTeam_controler {
     }
 
     @GetMapping(path = "/get/findUserbyTeam")
-    public ResponseEntity<List<UserReturnDto>> findUserByTeam(TeamDto teamDto){
-        List<UserReturnDto> userDTOList = userteamService.findUserByTeam(teamDto.getId());
-        return new ResponseEntity<List<UserReturnDto>>(userDTOList,HttpStatus.FOUND);
+    public ResponseEntity<Set<user>> findUserByTeam(TeamDto teamDto){
+        Set<user> userDTOList = userteamService.findUserByTeam(teamDto.getId());
+        return new ResponseEntity<Set<user>>(userDTOList,HttpStatus.FOUND);
     }
 
 }

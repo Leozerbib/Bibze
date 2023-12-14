@@ -1,17 +1,14 @@
 package com.example.Bibz.service;
 
-import com.example.Bibz.DTO.LoginTeamDto;
-import com.example.Bibz.DTO.RestrictedTeamDto;
-import com.example.Bibz.DTO.TeamDto;
+import com.example.Bibz.DTO.*;
 import com.example.Bibz.model.Team;
 import com.example.Bibz.model.user;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 public interface TeamService {
-    public ResponseEntity<RestrictedTeamDto> saveTeam(LoginTeamDto Team);
+    public ResponseEntity<RestrictedTeamDto> saveTeam(CreateTeamDto Team);
     public Team updateTeam(Team team);
     public void deleteTeam(Long id);
     public Team findByIdAndPassword(Long id, String password);
@@ -19,4 +16,5 @@ public interface TeamService {
     public TeamDto findByName(String name);
     public boolean checkIfIdexists(Long id);
     public Long findIdByName(String name);
+    public Set<user> findUserByTeam(Long id);
 }

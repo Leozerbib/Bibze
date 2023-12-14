@@ -1,5 +1,6 @@
 package com.example.Bibz.service;
 
+import com.example.Bibz.DTO.RestrictedUserDro;
 import com.example.Bibz.DTO.UserDTO;
 import com.example.Bibz.Response.LoginResponse;
 import com.example.Bibz.model.user;
@@ -14,8 +15,8 @@ public interface iuserService {
     public user updateUser(user user);
 
     public void deleteUser(Long id);
-    public user findByIdAndPassword(Long id,String password);
-    public user findByUsernameOrEmail(String log,String logs);
+    public RestrictedUserDro findByIdAndPassword(Long id, String passwords);
+    public user findByUsernameOrEmail(String log, String logs);
 
     public user findUserByUsername(String username);
     public user findUserByNames(String names);

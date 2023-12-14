@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Set;
+
 
 @Entity
 @Data
@@ -29,4 +31,10 @@ public class Team {
 
     @Column(name = "password",nullable = false)
     private String pwd;
+
+    @ManyToMany
+    @JoinTable(name = "user_team",
+            joinColumns = @JoinColumn(name = "team_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<user> users;
 }

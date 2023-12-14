@@ -15,12 +15,9 @@ import java.util.Set;
 
 @Repository
 public interface UserTeamRepo extends JpaRepository<UserTeam,Long> {
-    public UserTeam findByTeam_id(Set<Team> team_id);
-    public UserTeam findByUser_id(Set<user> user_id);
-    public UserTeam findByUser_idAndTeam_id(Set<Team> team_id,Set<user> user_id);
-    public UserTeam findByTeam_id(Long id);
-    @Query("select  u.id ,u.names,u.username from UserTeam ut left join ut.user_id u where ut.team_id = :teamID")
-    public List<UserReturnDto> findByUser_id(Long teamID);
+    @Query(value = "select  user.Id ,user.last_co,user.username from UserTeam ut left join fetch ut.User_id u where ut.Team_id = :teamID",
+            nativeQuery  = false)
+    public Set<user> findByTeam_id(Long teamID);
 
 
 }

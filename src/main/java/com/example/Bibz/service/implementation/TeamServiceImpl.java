@@ -1,11 +1,10 @@
 package com.example.Bibz.service.implementation;
 
-import com.example.Bibz.DTO.LoginTeamDto;
-import com.example.Bibz.DTO.RestrictedTeamDto;
-import com.example.Bibz.DTO.TeamDto;
+import com.example.Bibz.DTO.*;
 import com.example.Bibz.model.Team;
 import com.example.Bibz.model.user;
 import com.example.Bibz.repository.TeamRepo;
+import com.example.Bibz.repository.UserTeamRepo;
 import com.example.Bibz.service.TeamService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Service("teamService")
 @Transactional
@@ -26,13 +26,14 @@ public class TeamServiceImpl implements TeamService {
 
     @Autowired
     private final TeamRepo teamRepo;
-
+    @Autowired
+    private final UserTeamRepo userTeamRepo;
     @Override
-    public ResponseEntity<RestrictedTeamDto> saveTeam(LoginTeamDto Team) {
-        if (findByName(Team.getName()) !=null ){
+    public ResponseEntity<RestrictedTeamDto> saveTeam(CreateTeamDto Team) {
+        if (teamRepo.existsByName(Team.getName()) == true ){
             return new ResponseEntity<RestrictedTeamDto>(HttpStatus.CONFLICT);
         }
-        Team teamRequest = mapLoginTeamDtoToTeam(Team);
+        Team teamRequest = mapCreateTeamDTOToTeam(Team);
         teamRequest.setDate_crea(LocalDate.now());
         System.out.println(teamRequest.getName());
         if (teamRepo.save(teamRequest) != null){
@@ -78,7 +79,13 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public Long findIdByName(String name) {
+
         return teamRepo.findIdByName(name);
+    }
+    @Override
+    public Set<user> findUserByTeam(Long id) {
+        Set<user> userReturnDto = userTeamRepo.findByTeam_id(id);
+        return userReturnDto;
     }
 
     private TeamDto mapTeamToTeamDTO(Team team){
@@ -89,12 +96,12 @@ public class TeamServiceImpl implements TeamService {
 
     private Team mapTeamDTOToTeam(TeamDto teamDTO){
         ModelMapper mapper = new ModelMapper();
-        Team team = new Team(1L,teamDTO.getName(), teamDTO.getNbr_user(), teamDTO.getDate_crea(),teamDTO.getPwd());
+        Team team = new Team(0L,teamDTO.getName(), teamDTO.getNbr_user(), teamDTO.getDate_crea(),teamDTO.getPwd(),null);
         return team;
     }
     private Team mapRestrictedTeamDtoToTeam(RestrictedTeamDto restrictedTeamDto){
         ModelMapper mapper = new ModelMapper();
-        Team team = new Team(1L,restrictedTeamDto.getName(), 0, null,null);
+        Team team = new Team(0L,restrictedTeamDto.getName(), 0, null,null,null);
         return team;
     }
 
@@ -111,7 +118,18 @@ public class TeamServiceImpl implements TeamService {
 
     private Team mapLoginTeamDtoToTeam(LoginTeamDto loginTeamDto){
         ModelMapper mapper = new ModelMapper();
-        Team team = new Team(1L, loginTeamDto.getName(),0, null, loginTeamDto.getPwd());
+        Team team = new Team(0L, loginTeamDto.getName(),0, null, loginTeamDto.getPwd(),null);
+        return team;
+    }
+    private CreateTeamDto mapTeamToCreateTeamDTO(Team team){
+        ModelMapper mapper = new ModelMapper();
+        CreateTeamDto TeamDTO = mapper.map(team,CreateTeamDto.class);
+        return TeamDTO;
+    }
+
+    private Team mapCreateTeamDTOToTeam(CreateTeamDto teamDTO){
+        ModelMapper mapper = new ModelMapper();
+        Team team = new Team(0L,teamDTO.getName(), teamDTO.getNbr_user(), LocalDate.now(),teamDTO.getPwd(),null);
         return team;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.Bibz.service.implementation;
 
+import com.example.Bibz.DTO.RestrictedUserDro;
 import com.example.Bibz.DTO.UserDTO;
 import com.example.Bibz.Response.LoginResponse;
 import com.example.Bibz.repository.UserRepo;
@@ -45,7 +46,7 @@ public class UserServiceImpl implements iuserService {
 
     @Override
     public user updateUser(user user) {
-        log.info("user udpate : {}",user.getId()  );
+        log.info("user udpate : {}",user.getId());
         return userRepo.save(user);
     }
 
@@ -56,13 +57,14 @@ public class UserServiceImpl implements iuserService {
     }
 
     @Override
-    public user findByIdAndPassword(Long id, String password) {
-        return userRepo.findByIdAndPassword(id, password);
+    public RestrictedUserDro findByIdAndPassword(Long id, String passwords) {
+        return mapUserToresUserDTO(userRepo.findByIdAndPasswords(id, passwords));
     }
 
     @Override
-    public user findByUsernameOrEmail(String log,String logs) {
-        return userRepo.findByUsernameOrEmail(log,logs);
+    public user findByUsernameOrEmail(String log, String logs) {
+        user user = userRepo.findByUsernameOrEmail(log,logs);
+        return user;
     }
 
     @Override
@@ -118,7 +120,23 @@ public class UserServiceImpl implements iuserService {
      */
     private user mapUserDTOToUser(UserDTO UserDTO) {
         ModelMapper mapper = new ModelMapper();
-        user user = new user(1L, UserDTO.getNames(), UserDTO.getLastname(), UserDTO.getUsername(), UserDTO.getAge(), LocalDate.now(),LocalDate.now(), UserDTO.getEmail(), UserDTO.getPasswords());
+        user user = new user(1L, UserDTO.getNames(), UserDTO.getLastname(), UserDTO.getUsername(), UserDTO.getAge(), LocalDate.now(),LocalDate.now(), UserDTO.getEmail(), UserDTO.getPasswords(),null);
+        return user;
+    }
+    private RestrictedUserDro mapUserToresUserDTO(user user) {
+        ModelMapper mapper = new ModelMapper();
+        RestrictedUserDro UserDTO = mapper.map(user, RestrictedUserDro.class);
+        return UserDTO;
+    }
+    /**
+     * Transforme un POJO CustomerDTO en une entity Customer
+     *
+     * @param UserDTO
+     * @return
+     */
+    private user mapresUserDTOToUser(RestrictedUserDro UserDTO) {
+        ModelMapper mapper = new ModelMapper();
+        user user = new user(1L, null, null, UserDTO.getUsername(), 0, LocalDate.now(),LocalDate.now(), null, null,null);
         return user;
     }
 }

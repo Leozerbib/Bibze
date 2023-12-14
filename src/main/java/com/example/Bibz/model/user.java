@@ -6,17 +6,19 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table (name = "users")
+
 public class user {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "user_id")
-    private Long id;
+    private Long Id;
 
     @Column(name = "names",nullable = false)
     private String names;
@@ -40,5 +42,8 @@ public class user {
     private String email;
 
     @Column(name = "passwords",nullable = false)
-    private String password;
+    private String passwords;
+
+    @ManyToMany(mappedBy = "users")
+    private Set<Team> teams;
 }
