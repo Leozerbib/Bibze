@@ -1,7 +1,7 @@
 package com.example.Bibz.service.implementation;
 
-import com.example.Bibz.DTO.UserReturnDto;
-import com.example.Bibz.DTO.UserTeamDTO;
+import com.example.Bibz.DTO.User.UserReturnDto;
+import com.example.Bibz.DTO.User.UserTeamDTO;
 import com.example.Bibz.model.Team;
 import com.example.Bibz.model.UserTeam;
 import com.example.Bibz.model.user;
@@ -58,6 +58,11 @@ public class UserteamServiceImpl implements UserTeamService {
     @Override
     public boolean checkIfExist(Long id){
         return userTeamRepo.existsById(id);
+    }
+
+    @Override
+    public UserTeam checkIfExistDouble(Long id, Long idx) {
+        return userTeamRepo.findByTeam_idAndUser_idEqualsAndTeam_idEquals(id, idx);
     }
 
     @Override

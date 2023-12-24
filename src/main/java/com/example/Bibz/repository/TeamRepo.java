@@ -1,9 +1,7 @@
 package com.example.Bibz.repository;
 
-import com.example.Bibz.DTO.TeamPlusUserDto;
 import com.example.Bibz.model.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 

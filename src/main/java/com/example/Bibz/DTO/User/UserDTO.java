@@ -1,4 +1,4 @@
-package com.example.Bibz.DTO;
+package com.example.Bibz.DTO.User;
 
 
 import lombok.*;

@@ -1,4 +1,4 @@
-package com.example.Bibz.DTO;
+package com.example.Bibz.DTO.Team;
 
 import lombok.Getter;
 import lombok.Setter;

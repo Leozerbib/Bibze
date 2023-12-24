@@ -1,7 +1,7 @@
 package com.example.Bibz.service;
 
-import com.example.Bibz.DTO.RestrictedUserDro;
-import com.example.Bibz.DTO.UserDTO;
+import com.example.Bibz.DTO.User.RestrictedUserDro;
+import com.example.Bibz.DTO.User.UserDTO;
 import com.example.Bibz.Response.LoginResponse;
 import com.example.Bibz.model.user;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Collection;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface iuserService {
     public ResponseEntity<UserDTO> saveUser(UserDTO user);
@@ -24,5 +25,6 @@ public interface iuserService {
     public List<user> getUserByAge(int age);
     public Collection<user> getAllbyAge(int age);
     public LoginResponse loginUser(user user);
+    public Optional<user> findById(Long id);
 
 }

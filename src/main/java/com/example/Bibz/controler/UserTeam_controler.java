@@ -1,10 +1,7 @@
 package com.example.Bibz.controler;
 
-import com.example.Bibz.DTO.TeamDto;
-import com.example.Bibz.DTO.UserDTO;
-import com.example.Bibz.DTO.UserReturnDto;
-import com.example.Bibz.DTO.UserTeamDTO;
-import com.example.Bibz.model.UserTeam;
+import com.example.Bibz.DTO.Team.TeamDto;
+import com.example.Bibz.DTO.User.UserTeamDTO;
 import com.example.Bibz.model.user;
 import com.example.Bibz.service.implementation.TeamServiceImpl;
 import com.example.Bibz.service.implementation.UserteamServiceImpl;
@@ -14,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 
 @CrossOrigin

@@ -1,4 +1,4 @@
-package com.example.Bibz.DTO;
+package com.example.Bibz.DTO.Team;
 
 import com.example.Bibz.model.user;
 import lombok.AllArgsConstructor;

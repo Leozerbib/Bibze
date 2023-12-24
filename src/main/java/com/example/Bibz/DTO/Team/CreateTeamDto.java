@@ -1,4 +1,4 @@
-package com.example.Bibz.DTO;
+package com.example.Bibz.DTO.Team;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +12,5 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class CreateTeamDto {
     private String name;
-    private int nbr_user;
     private String pwd;
 }

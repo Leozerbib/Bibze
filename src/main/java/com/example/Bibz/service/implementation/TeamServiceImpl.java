@@ -1,6 +1,9 @@
 package com.example.Bibz.service.implementation;
 
-import com.example.Bibz.DTO.*;
+import com.example.Bibz.DTO.Team.CreateTeamDto;
+import com.example.Bibz.DTO.Team.LoginTeamDto;
+import com.example.Bibz.DTO.Team.RestrictedTeamDto;
+import com.example.Bibz.DTO.Team.TeamDto;
 import com.example.Bibz.model.Team;
 import com.example.Bibz.model.user;
 import com.example.Bibz.repository.TeamRepo;
@@ -78,6 +81,16 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public boolean checkIfNameExist(String name) {
+        return teamRepo.existsByName(name);
+    }
+
+    @Override
+    public Team findTeamById(Long id) {
+        return teamRepo.findTeamById(id);
+    }
+
+    @Override
     public Long findIdByName(String name) {
 
         return teamRepo.findIdByName(name);
@@ -96,7 +109,7 @@ public class TeamServiceImpl implements TeamService {
 
     private Team mapTeamDTOToTeam(TeamDto teamDTO){
         ModelMapper mapper = new ModelMapper();
-        Team team = new Team(0L,teamDTO.getName(), teamDTO.getNbr_user(), teamDTO.getDate_crea(),teamDTO.getPwd(),null);
+        Team team = new Team(0L,teamDTO.getName(), teamDTO.getNbr_user(), teamDTO.getDate_crea(),null,teamDTO.getUserTeam());
         return team;
     }
     private Team mapRestrictedTeamDtoToTeam(RestrictedTeamDto restrictedTeamDto){
@@ -129,7 +142,7 @@ public class TeamServiceImpl implements TeamService {
 
     private Team mapCreateTeamDTOToTeam(CreateTeamDto teamDTO){
         ModelMapper mapper = new ModelMapper();
-        Team team = new Team(0L,teamDTO.getName(), teamDTO.getNbr_user(), LocalDate.now(),teamDTO.getPwd(),null);
+        Team team = new Team(0L,teamDTO.getName(), 0, LocalDate.now(),teamDTO.getPwd(),null);
         return team;
     }
 }

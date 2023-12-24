@@ -1,9 +1,9 @@
 package com.example.Bibz.controler;
 
-import com.example.Bibz.DTO.LoginDTO;
-import com.example.Bibz.DTO.RestrictedUserDro;
-import com.example.Bibz.DTO.UserDTO;
-import com.example.Bibz.Response.LoginResponse;
+import com.example.Bibz.DTO.User.LoginDTO;
+import com.example.Bibz.DTO.User.RestrictedUserDro;
+import com.example.Bibz.DTO.User.UserDTO;
+import com.example.Bibz.DTO.User.UserReturnDto;
 import com.example.Bibz.model.user;
 import com.example.Bibz.service.implementation.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -92,9 +92,24 @@ public class User_controler {
         user user = userService.findUserByUsername(username);
         if (user != null) {
             UserDTO userDTO = mapUserToUserDTO(user);
+            System.out.println(userDTO.getUsername());
             return new ResponseEntity<UserDTO>(userDTO, HttpStatusCode.valueOf(200));
         }
+        System.out.println("noooonnnn");
         return new ResponseEntity<UserDTO>(HttpStatusCode.valueOf(304));
+
+    }
+    @GetMapping("/searchById")
+    public ResponseEntity<Optional<UserReturnDto>> searchUserById(@RequestParam("id") Long id) {
+        //, UriComponentsBuilder uriComponentBuilder
+        Optional<user> user = userService.findById(id);
+        if (user != null) {
+            Optional<UserReturnDto> userDTO = mapUserToUserDTOReturn(user);
+            System.out.println(userDTO.get().getId());
+            return new ResponseEntity<Optional<UserReturnDto>>(userDTO, HttpStatusCode.valueOf(200));
+        }
+        System.out.println("non");
+        return new ResponseEntity<Optional<UserReturnDto>>(HttpStatusCode.valueOf(304));
     }
 
     /**
@@ -181,5 +196,13 @@ public class User_controler {
         user user = mapper.map(UserDTO, user.class);
         return user;
     }
+    private Optional<UserReturnDto> mapUserToUserDTOReturn(Optional<user> user) {
+        ModelMapper mapper = new ModelMapper();
+        Optional<UserReturnDto> UserDTO = Optional.ofNullable(mapper.map(user, UserReturnDto.class));
+        return UserDTO;
+    }
+
+
+
 
 }

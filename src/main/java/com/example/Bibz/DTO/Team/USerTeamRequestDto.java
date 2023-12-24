@@ -1,4 +1,4 @@
-package com.example.Bibz.DTO;
+package com.example.Bibz.DTO.Team;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,16 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter@Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class CreateUserDto {
-    private String names;
-    private String lastname;
+@NoArgsConstructor
+public class USerTeamRequestDto {
+    private Long idteam;
     private String username;
-    private int age;
-    private String email;
     private String passwords;
-
-
-
 }

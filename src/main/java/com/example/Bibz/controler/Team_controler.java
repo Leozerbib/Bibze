@@ -1,11 +1,11 @@
 package com.example.Bibz.controler;
 
-import com.example.Bibz.DTO.*;
+import com.example.Bibz.DTO.Team.*;
+import com.example.Bibz.DTO.User.UserDTO;
+import com.example.Bibz.DTO.User.UserReturnDto;
+import com.example.Bibz.DTO.User.UserTeamDTO;
 import com.example.Bibz.model.Team;
-import com.example.Bibz.model.UserTeam;
 import com.example.Bibz.model.user;
-import com.example.Bibz.repository.TeamRepo;
-import com.example.Bibz.repository.UserTeamRepo;
 import com.example.Bibz.service.implementation.TeamServiceImpl;
 import com.example.Bibz.service.implementation.UserServiceImpl;
 import com.example.Bibz.service.implementation.UserteamServiceImpl;
@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 @RestController
@@ -26,12 +28,21 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class Team_controler {
 
+    private final mapper mapper;
     @Autowired
     private TeamServiceImpl teamService;
     @Autowired
     private UserServiceImpl userService;
     @Autowired
     private UserteamServiceImpl userteamService;
+    @Autowired
+    public Team_controler(mapper mapper, TeamServiceImpl teamService, UserServiceImpl userService, UserteamServiceImpl userteamService) {
+        this.mapper = mapper;
+        this.teamService = teamService;
+        this.userService = userService;
+        this.userteamService = userteamService;
+    }
+
     @PostMapping(path = "/create")
     public ResponseEntity<RestrictedTeamDto> CreateTeam(@RequestBody CreateTeamDto teamDto){
         System.out.println(teamDto.getName());
@@ -51,33 +62,39 @@ public class Team_controler {
         return new ResponseEntity<TeamDto>(HttpStatus.NOT_MODIFIED);
     }
     @PostMapping(path = "/addUser")
-    public ResponseEntity<Long> addUser(@RequestBody USerTeamRequestDto uSerTeamRequestDto){
+    public ResponseEntity<UserReturnDto> addUser(@RequestBody USerTeamRequestDto uSerTeamRequestDto){
         System.out.println(uSerTeamRequestDto.getUsername());
         System.out.println(uSerTeamRequestDto.getIdteam());
-        UserDTO userDTO = mapUserToUserDTO(userService.findByUsernameOrEmail(uSerTeamRequestDto.getUsername(), uSerTeamRequestDto.getUsername()));
-        System.out.println(userDTO.getId());
-        System.out.println(userDTO);
-        if (userDTO !=null){
-            if (uSerTeamRequestDto.getPasswords().equals(userDTO.getPasswords())){
+        user user = userService.findByUsernameOrEmail(uSerTeamRequestDto.getUsername(), uSerTeamRequestDto.getUsername());
+        System.out.println(user.getId());
+        System.out.println(user);
+        if (user !=null){
+            if (uSerTeamRequestDto.getPasswords().equals(user.getPasswords())){
                 if(teamService.checkIfIdexists(uSerTeamRequestDto.getIdteam())){
-                    System.out.println(userDTO.getId());
-                    System.out.println("oui");
-                    UserTeamDTO userTeam = new UserTeamDTO(0L, userDTO.getId(), uSerTeamRequestDto.getIdteam(), LocalDate.now());
-                    System.out.println(userTeam.getUser_id());
-                    userteamService.saveUserTeam(userTeam);
-                    System.out.println("oui");
-                    return new ResponseEntity<Long>(uSerTeamRequestDto.getIdteam(),HttpStatus.CREATED);
+                    if (userteamService.checkIfExistDouble(user.getId(), uSerTeamRequestDto.getIdteam()) == null){
+                        System.out.println(user.getId());
+                        System.out.println("oui");
+                        UserReturnDto userDTO = mapper.mapUserToUserDTOReturn(user);
+                        UserTeamDTO userTeam = new UserTeamDTO(0L, user.getId(), uSerTeamRequestDto.getIdteam(), LocalDate.now());
+                        System.out.println(userTeam.getUser_id());
+                        userteamService.saveUserTeam(userTeam);
+                        System.out.println("oui");
+                        return new ResponseEntity<UserReturnDto>(userDTO,HttpStatus.CREATED);
+                    }
+                    else {
+                        return new ResponseEntity<UserReturnDto>(HttpStatus.CONFLICT);
+                    }
                 }
                 else {
-                    return new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
+                    return new ResponseEntity<UserReturnDto>(HttpStatus.NOT_FOUND);
                 }
             }
             else {
-                return new ResponseEntity<Long>(HttpStatus.CONFLICT);
+                return new ResponseEntity<UserReturnDto>(HttpStatus.CONFLICT);
             }
         }
         else {
-            return new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<UserReturnDto>(HttpStatus.NOT_FOUND);
         }
 
     }
@@ -91,10 +108,13 @@ public class Team_controler {
 
 
     @GetMapping(path = "/get/findTeamByName")
-    public ResponseEntity<TeamDto> findTeamByName(TeamDto teamDto){
-
-        if(teamService.findByName(teamDto.getName()) instanceof TeamDto ){
-            return new ResponseEntity<TeamDto>(teamService.findByName(teamDto.getName()),HttpStatus.ACCEPTED);
+    public ResponseEntity<TeamDto> findTeamByName(String name){
+        TeamDto teamDto= teamService.findByName(name);
+        if(teamDto instanceof TeamDto ){
+            System.out.println("non");
+            teamDto.setUserTeam(userteamService.findUserByTeam(teamDto.getId()));
+            System.out.println("oui");
+            return new ResponseEntity<TeamDto>(teamDto,HttpStatus.ACCEPTED);
         }
         else{
             return new ResponseEntity<TeamDto>(HttpStatus.NOT_FOUND);
@@ -110,17 +130,24 @@ public class Team_controler {
         return new ResponseEntity<TeamPlusUserDto>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping(path = "/login")
+    @GetMapping(path = "/get/findTeam/{teamId}")
+    public RestrictedTeamDto findTeam(@PathVariable Long teamId){
+        RestrictedTeamDto restrictedTeamDto1 = mapTeamToRestrictedTeamDTO(teamService.findTeamById(teamId));
+        System.out.println(restrictedTeamDto1);
+        return restrictedTeamDto1;
+
+    }
+
+    @PostMapping(path = "/login")
     public ResponseEntity<RestrictedTeamDto> loginUser(@RequestBody LoginTeamDto LoginDTO){
         String msg = "";
-        Long id = teamService.findIdByName(LoginDTO.getName());
-        if (teamService.checkIfIdexists(id) == true){
+        if (teamService.checkIfNameExist(LoginDTO.getName()) == true){
             String passwordTest = LoginDTO.getPwd();
-            String encodedPassword = teamService.findByIdAndPassword(id,passwordTest).getPwd();
-            Boolean isPwdOk = passwordTest.equals(encodedPassword);
+            Team team = teamService.findByNameAndPassword(LoginDTO.getName(), LoginDTO.getPwd());
+            Boolean isPwdOk = passwordTest.equals(team.getPwd());
             if (isPwdOk){
                     System.out.println("Login Success");
-                    ResponseEntity<RestrictedTeamDto> userResponseEntity=new ResponseEntity<RestrictedTeamDto>(mapTeamToRestrictedTeamDTO(teamService.findByIdAndPassword(id,passwordTest)), HttpStatusCode.valueOf(200));
+                    ResponseEntity<RestrictedTeamDto> userResponseEntity=new ResponseEntity<RestrictedTeamDto>(mapTeamToRestrictedTeamDTO(team), HttpStatusCode.valueOf(200));
                     System.out.println(userResponseEntity);
                     return userResponseEntity;
 
@@ -158,13 +185,23 @@ public class Team_controler {
 
     private Team mapTeamDTOToTeam(TeamDto teamDTO){
         ModelMapper mapper = new ModelMapper();
-        Team team = new Team(1L,teamDTO.getName(), teamDTO.getNbr_user(), teamDTO.getDate_crea(),teamDTO.getPwd(),null);
+        Team team = new Team(1L,teamDTO.getName(), teamDTO.getNbr_user(), teamDTO.getDate_crea(),null,teamDTO.getUserTeam());
         return team;
     }
 
     private RestrictedTeamDto mapTeamToRestrictedTeamDTO(Team team){
         ModelMapper mapper = new ModelMapper();
-        RestrictedTeamDto TeamDTO = mapper.map(team,RestrictedTeamDto.class);
+        System.out.println("non");
+        RestrictedTeamDto TeamDTO =new RestrictedTeamDto(team.getId(), team.getName(), team.getNbr_user(), team.getDate_crea(),null);
+        System.out.println(TeamDTO.getUsers());
+        Set<user> user = userteamService.findUserByTeam(team.getId());
+        System.out.println(user);
+        Set<UserReturnDto> userReturnDtos = new HashSet<>();
+        for ( com.example.Bibz.model.user i :  user){
+            userReturnDtos.add(mapper.map(i, UserReturnDto.class));
+        }
+        TeamDTO.setUsers(userReturnDtos);
+        System.out.println(TeamDTO.getUsers());
         return TeamDTO;
     }
 
@@ -188,7 +225,7 @@ public class Team_controler {
      */
     private user mapUserDTOToUser(UserDTO UserDTO) {
         ModelMapper mapper = new ModelMapper();
-        user user = new user(1L, UserDTO.getNames(), UserDTO.getLastname(), UserDTO.getUsername(), UserDTO.getAge(), LocalDate.now(),LocalDate.now(), UserDTO.getEmail(), UserDTO.getPasswords(),null);
+        user user = new user(1L, UserDTO.getNames(), UserDTO.getLastname(), UserDTO.getUsername(), UserDTO.getAge(), LocalDate.now(),LocalDate.now(), UserDTO.getEmail(), UserDTO.getPasswords(),null,null);
         return user;
     }
 

@@ -1,6 +1,6 @@
 package com.example.Bibz.service;
 
-import com.example.Bibz.DTO.UserTeamDTO;
+import com.example.Bibz.DTO.User.UserTeamDTO;
 import com.example.Bibz.model.Team;
 import com.example.Bibz.model.UserTeam;
 import com.example.Bibz.model.user;
@@ -17,4 +17,5 @@ public interface UserTeamService {
     public Collection<Team> findTeamByUser(Long id);
     public boolean checkIfExist(Long id);
 
+    public UserTeam checkIfExistDouble(Long id,Long idx);
 }

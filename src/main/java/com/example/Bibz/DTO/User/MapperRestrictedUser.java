@@ -1,4 +1,4 @@
-package com.example.Bibz.DTO;
+package com.example.Bibz.DTO.User;
 
 import com.example.Bibz.model.user;
 import org.modelmapper.ModelMapper;
@@ -19,7 +19,7 @@ public class MapperRestrictedUser {
      */
     public  user mapDto(RestrictedUserDro UserDTO) {
         ModelMapper mapper = new ModelMapper();
-        user user = new user(1L, null, null, UserDTO.getUsername(), 0, LocalDate.now(),LocalDate.now(), null, null,null);
+        user user = new user(1L, null, null, UserDTO.getUsername(), 0, LocalDate.now(),LocalDate.now(), null, null,null,null);
         return user;
     }
 }

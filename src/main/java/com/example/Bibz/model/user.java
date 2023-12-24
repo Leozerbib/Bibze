@@ -44,6 +44,9 @@ public class user {
     @Column(name = "passwords",nullable = false)
     private String passwords;
 
+    @Column(name = "icon" )
+    private String icon;
+
     @ManyToMany(mappedBy = "users")
     private Set<Team> teams;
 }

@@ -1,4 +1,4 @@
-package com.example.Bibz.DTO;
+package com.example.Bibz.DTO.Team;
 
 import java.time.LocalDate;
 import java.util.Set;

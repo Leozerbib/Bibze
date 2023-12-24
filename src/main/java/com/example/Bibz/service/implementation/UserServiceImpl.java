@@ -1,7 +1,7 @@
 package com.example.Bibz.service.implementation;
 
-import com.example.Bibz.DTO.RestrictedUserDro;
-import com.example.Bibz.DTO.UserDTO;
+import com.example.Bibz.DTO.User.RestrictedUserDro;
+import com.example.Bibz.DTO.User.UserDTO;
 import com.example.Bibz.Response.LoginResponse;
 import com.example.Bibz.repository.UserRepo;
 import com.example.Bibz.model.user;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service("userService")
 @Transactional
@@ -63,14 +64,17 @@ public class UserServiceImpl implements iuserService {
 
     @Override
     public user findByUsernameOrEmail(String log, String logs) {
-        user user = userRepo.findByUsernameOrEmail(log,logs);
-        return user;
+        return userRepo.findByUsernameOrEmail(log,logs);
     }
 
     @Override
     public user findUserByUsername(String username) {
         log.info("username : {}",username );
         return userRepo.findByUsername(username);
+    }
+    @Override
+    public Optional<user> findById(Long id){
+        return userRepo.findById(id);
     }
 
     @Override
@@ -120,7 +124,7 @@ public class UserServiceImpl implements iuserService {
      */
     private user mapUserDTOToUser(UserDTO UserDTO) {
         ModelMapper mapper = new ModelMapper();
-        user user = new user(1L, UserDTO.getNames(), UserDTO.getLastname(), UserDTO.getUsername(), UserDTO.getAge(), LocalDate.now(),LocalDate.now(), UserDTO.getEmail(), UserDTO.getPasswords(),null);
+        user user = new user(1L, UserDTO.getNames(), UserDTO.getLastname(), UserDTO.getUsername(), UserDTO.getAge(), LocalDate.now(),LocalDate.now(), UserDTO.getEmail(), UserDTO.getPasswords(),null,null);
         return user;
     }
     private RestrictedUserDro mapUserToresUserDTO(user user) {
@@ -136,7 +140,7 @@ public class UserServiceImpl implements iuserService {
      */
     private user mapresUserDTOToUser(RestrictedUserDro UserDTO) {
         ModelMapper mapper = new ModelMapper();
-        user user = new user(1L, null, null, UserDTO.getUsername(), 0, LocalDate.now(),LocalDate.now(), null, null,null);
+        user user = new user(1L, null, null, UserDTO.getUsername(), 0, LocalDate.now(),LocalDate.now(), null, null,null,null);
         return user;
     }
 }

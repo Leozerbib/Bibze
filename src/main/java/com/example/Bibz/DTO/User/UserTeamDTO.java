@@ -1,4 +1,4 @@
-package com.example.Bibz.DTO;
+package com.example.Bibz.DTO.User;
 
 import com.example.Bibz.model.Team;
 import com.example.Bibz.model.UserTeam;
